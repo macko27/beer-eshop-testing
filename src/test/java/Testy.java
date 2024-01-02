@@ -1,12 +1,11 @@
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Testy {
 
     @Test
-    void loginTestSpravneUdaje() {
+    void loginSpravneUdaje() {
         WebDriver driver = new FirefoxDriver();
         driver.get("http://127.0.0.1:8000/login");
         WebElement login = driver.findElement(By.id("email"));
@@ -31,7 +30,7 @@ public class Testy {
     }
 
     @Test
-    void loginTestNespravneHeslo() {
+    void loginNespravneHeslo() {
         WebDriver driver = new FirefoxDriver();
         driver.get("http://127.0.0.1:8000/login");
         WebElement login = driver.findElement(By.id("email"));
@@ -48,7 +47,7 @@ public class Testy {
     }
 
     @Test
-    void loginTestBezAdresy() {
+    void loginBezAdresy() {
         WebDriver driver = new FirefoxDriver();
         driver.get("http://127.0.0.1:8000/login");
         WebElement login = driver.findElement(By.id("email"));
@@ -59,6 +58,48 @@ public class Testy {
         driver.findElement(By.name("submit")).click();
 
         assertEquals(driver.getCurrentUrl(), "http://127.0.0.1:8000/login");
+        driver.quit();
+    }
+
+    @Test
+    void registraciaSpravneUdaje() {
+
+
+
+    }
+
+    @Test
+    void registraciaRovnakeMeno() {
+        WebDriver driver = new FirefoxDriver();
+        driver.get("http://127.0.0.1:8000/register");
+        driver.findElement(By.id("name")).sendKeys("skuska");
+        driver.findElement(By.id("email")).sendKeys("skuskaaa@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("12345678");
+        driver.findElement(By.id("password_confirmation")).sendKeys("12345678");
+
+        driver.findElement(By.id("register")).click();
+
+        String text = driver.findElement(By.id("wrongInputName")).getText();
+
+        assertEquals(text, "The name has already been taken.");
+
+        driver.quit();
+    }
+
+    @Test
+    void registraciaKratkeHeslo() {
+        WebDriver driver = new FirefoxDriver();
+        driver.get("http://127.0.0.1:8000/register");
+        driver.findElement(By.id("name")).sendKeys("skuska");
+        driver.findElement(By.id("email")).sendKeys("skuska@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("123");
+        driver.findElement(By.id("password_confirmation")).sendKeys("123");
+
+        driver.findElement(By.id("register")).click();
+
+        String text = driver.findElement(By.id("wrongInputPassword")).getText();
+
+        assertEquals(text, "The password field must be at least 8 characters.");
         driver.quit();
     }
 
@@ -76,8 +117,51 @@ public class Testy {
     }
 
     @Test
-    void vyhladaniePivaPodla() {
+    void kliknutieTlacidlaDomov() {
+        WebDriver driver = new ChromeDriver();
+        driver.get("http://127.0.0.1:8000/beers");
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        int i = 1;
+
+        while (i <= 3) {
+            try {
+                WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.id("home")));
+                element.click();
+                break;
+            } catch (Exception e) {
+                i++;
+
+            }
+        }
+
+        assertEquals(driver.getCurrentUrl(), "http://127.0.0.1:8000/");
+        driver.quit();
+    }
+
+    @Test
+    void kliknutieTlacidlaPredaj() {
+        WebDriver driver = new ChromeDriver();
+        driver.get("http://127.0.0.1:8000/");
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        int i = 1;
+
+        while (i <= 3) {
+            try {
+                WebElement element = wait.until(ExpectedConditions.elementToBeClickable(By.id("sell")));
+                element.click();
+                break;
+            } catch (Exception e) {
+                i++;
+
+            }
+        }
+
+        assertEquals(driver.getCurrentUrl(), "http://127.0.0.1:8000/beers");
+        driver.quit();
     }
 
     @Test
@@ -138,6 +222,33 @@ public class Testy {
     }
 
     @Test
+    void pridanieNovehoPivaZlaCena() {
+        WebDriver driver = new FirefoxDriver();
+
+        driver.get("http://127.0.0.1:8000/login");
+        driver.findElement(By.id("email")).sendKeys("admin@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("admin123");
+        driver.findElement(By.name("submit")).click();
+
+        driver.get("http://127.0.0.1:8000/beers/create");
+
+        driver.findElement(By.id("name")).sendKeys("skuska");
+        driver.findElement(By.id("style")).sendKeys("style");
+        driver.findElement(By.id("type")).sendKeys("type");
+        driver.findElement(By.id("price")).sendKeys("price");
+        driver.findElement(By.id("degree")).sendKeys("5");
+        driver.findElement(By.id("brewery")).sendKeys("brewery");
+        driver.findElement(By.id("description")).sendKeys("description");
+        driver.findElement(By.id("beerCreate")).click();
+
+        WebElement error = driver.findElement(By.className("wrongInput"));
+
+        assertEquals(error.getText(), "The price field must be a number.");
+
+        driver.quit();
+    }
+
+    @Test
     void pridanieDoKosiku() {
         WebDriver driver = new FirefoxDriver();
         driver.get("http://127.0.0.1:8000/beers/7");
@@ -149,7 +260,7 @@ public class Testy {
 
         assertEquals(rows.size(), 1);
 
-        driver.close();
+        driver.quit();
     }
 
     @Test
@@ -167,7 +278,7 @@ public class Testy {
 
         assertEquals(mnozstvo, "2");
 
-        driver.close();
+        driver.quit();
     }
 
     @Test
@@ -186,6 +297,6 @@ public class Testy {
 
         assertEquals(piva.size(), 0);
 
-        driver.close();
+        driver.quit();
     }
 }
