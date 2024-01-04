@@ -178,8 +178,8 @@ public class Testy {
         driver.findElement(By.id("name")).sendKeys("skuska");
         driver.findElement(By.id("style")).sendKeys("style");
         driver.findElement(By.id("type")).sendKeys("type");
-        driver.findElement(By.id("price")).sendKeys("price");
-        driver.findElement(By.id("degree")).sendKeys("degree");
+        driver.findElement(By.id("price")).sendKeys("5");
+        driver.findElement(By.id("degree")).sendKeys("5");
         driver.findElement(By.id("brewery")).sendKeys("brewery");
         driver.findElement(By.id("description")).sendKeys("description");
         driver.findElement(By.id("beerCreate")).click();
@@ -284,18 +284,18 @@ public class Testy {
     @Test
     void odstranenieZKosiku() {
         WebDriver driver = new FirefoxDriver();
-        driver.get("http://127.0.0.1:8000/beers/7");
 
+        driver.get("http://127.0.0.1:8000/beers/7");
+        driver.findElement(By.className("addToCart")).click();
+        driver.get("http://127.0.0.1:8000/beers/8");
         driver.findElement(By.className("addToCart")).click();
 
         driver.get("http://127.0.0.1:8000/cart");
+
+        driver.findElement(By.className("cart-delete")).click();
         List<WebElement> piva = driver.findElements(By.id("cartItem"));
 
-        piva.get(0).findElement(By.className("cart-delete")).click();
-
-        piva = driver.findElements(By.id("cartItem"));
-
-        assertEquals(piva.size(), 0);
+        assertEquals(piva.size(), 1);
 
         driver.quit();
     }
