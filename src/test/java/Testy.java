@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -59,13 +60,6 @@ public class Testy {
 
         assertEquals(driver.getCurrentUrl(), "http://127.0.0.1:8000/login");
         driver.quit();
-    }
-
-    @Test
-    void registraciaSpravneUdaje() {
-
-
-
     }
 
     @Test
@@ -232,7 +226,7 @@ public class Testy {
 
         driver.get("http://127.0.0.1:8000/beers/create");
 
-        driver.findElement(By.id("name")).sendKeys("skuska");
+        driver.findElement(By.id("name")).sendKeys("skuskaaa");
         driver.findElement(By.id("style")).sendKeys("style");
         driver.findElement(By.id("type")).sendKeys("type");
         driver.findElement(By.id("price")).sendKeys("price");
@@ -248,28 +242,13 @@ public class Testy {
         driver.quit();
     }
 
-    @Test
-    void pridanieDoKosiku() {
-        WebDriver driver = new FirefoxDriver();
-        driver.get("http://127.0.0.1:8000/beers/7");
-
-        driver.findElement(By.className("addToCart")).click();
-
-        driver.get("http://127.0.0.1:8000/cart");
-        List<WebElement> rows = driver.findElements(By.id("cartItem"));
-
-        assertEquals(rows.size(), 1);
-
-        driver.quit();
-    }
 
     @Test
     void pridanieTohoIstehoDoKosiku() {
         WebDriver driver = new FirefoxDriver();
-        driver.get("http://127.0.0.1:8000/beers/7");
-
+        driver.get("http://127.0.0.1:8000/beers/1");
         driver.findElement(By.className("addToCart")).click();
-        driver.get("http://127.0.0.1:8000/beers/7");
+        driver.get("http://127.0.0.1:8000/beers/1");
         driver.findElement(By.className("addToCart")).click();
 
         driver.get("http://127.0.0.1:8000/cart");
@@ -282,12 +261,30 @@ public class Testy {
     }
 
     @Test
+    void odstranenieZKosikuZmenouMnozstva() {
+        WebDriver driver = new FirefoxDriver();
+        driver.get("http://127.0.0.1:8000/beers/1");
+        driver.findElement(By.className("addToCart")).click();
+
+        driver.get("http://127.0.0.1:8000/cart");
+        WebElement input = driver.findElement(By.className("beer-quantity-change"));
+
+        Actions actions = new Actions(driver);
+        actions.sendKeys(input, Keys.ARROW_DOWN).build().perform();
+
+        List<WebElement> piva = driver.findElements(By.id("cartItem"));
+        assertEquals(piva.size(), 0);
+
+        driver.quit();
+    }
+
+    @Test
     void odstranenieZKosiku() {
         WebDriver driver = new FirefoxDriver();
 
-        driver.get("http://127.0.0.1:8000/beers/7");
+        driver.get("http://127.0.0.1:8000/beers/1");
         driver.findElement(By.className("addToCart")).click();
-        driver.get("http://127.0.0.1:8000/beers/8");
+        driver.get("http://127.0.0.1:8000/beers/2");
         driver.findElement(By.className("addToCart")).click();
 
         driver.get("http://127.0.0.1:8000/cart");
